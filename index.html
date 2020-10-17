@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COVID-19 Tracker</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.2.1/angular-material.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.1/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-aria/1.8.1/angular-aria.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-animate/1.8.1/angular-animate.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.8.1/angular-route.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.2.1/angular-material.min.js"></script>
+
+  <script src="app.js"></script>
+</head>
+
+<body ng-app='app' ng-cloak>
+  <!-- <h1>COVID-19 Tracker Philippines</h1> -->
+  <div ng-controller='Tracker'>
+    <div class="md-display-2 text-center p-3">COVID-19 Tracker</div>
+    <div class="md-title text-center">by Mark Cay (2020)</div>
+    <div class="d-flex p-2">
+      <md-input-container style='width: 100%'>
+        <label>Select Country</label>
+        <md-select ng-model="selectedCountry" ng-change='getLatest(selectedCountry);'>
+          <md-option><em>None</em></md-option>
+          <md-option ng-repeat="country in countries" ng-value="country.Slug" ng-disabled="$index === 1"
+            ng-selected='country.Slug === defaultCountry'>
+            {{country.Country}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <md-toolbar md-scroll-shrink>
+      <div class="md-toolbar-tools">World's Latest</div>
+    </md-toolbar>
+    <div class="d-flex justify-content-center mt-2" ng-if="!success">
+      <md-progress-circular ng-if="!success" class="md-primary"></md-progress-circular>
+    </div>
+    <md-card ng-if="success">
+      <md-card-content class="d-flex justify-content-between flex-column flex-sm-row">
+        <div class="md-title text-info">Total Confirmed: <span
+            class="md-headline font-weight-bold">{{worldLatest.TotalConfirmed | number}}</span>
+        </div>
+        <div class="md-title text-danger">Total Deaths: <span
+            class="md-headline font-weight-bold">{{worldLatest.TotalDeaths | number}}</span></div>
+        <div class="md-title text-success">Total Recovered: <span
+            class="md-headline font-weight-bold">{{worldLatest.TotalRecovered | number}}</span></div>
+      </md-card-content>
+    </md-card>
+    <div class="d-flex justify-content-center mt-2" ng-if="loading">
+      <md-progress-circular ng-if="loading" class="md-accent"></md-progress-circular>
+    </div>
+
+    <div ng-if="!loading && covidLatest.Cases !== undefined">
+      <md-toolbar md-scroll-shrink class="md-accent">
+        <div class="md-toolbar-tools">{{covidLatest.Country}}</div>
+      </md-toolbar>
+      <md-card>
+        <md-card-content>
+          <div class="md-headline"><strong>Date retrieved:</strong>
+            {{covidLatest.Date | date:'MM/dd/yyyy @ h:mma'}}
+          </div>
+        </md-card-content>
+      </md-card>
+      <md-card>
+        <md-card-content>
+          <div class="md-display-1"><strong>Confirmed Cases:</strong>
+            <span class="text-danger">{{covidLatest.Cases | number}}</span>
+          </div>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div ng-if="!loading && success && covidLatest.Cases === undefined" class="p-2">
+      No data to show for this country.
+    </div>
+  </div>
+</body>
+
+</html>
